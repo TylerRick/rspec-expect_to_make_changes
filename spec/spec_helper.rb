@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "rspec/expect_changes"
+require "rspec/expect_to_make_changes"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

@@ -1,11 +1,11 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "rspec/expect_changes/version"
+require "rspec/expect_to_make_changes/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "rspec-expect_changes"
-  spec.version       = Rspec::ExpectChanges.version
+  spec.name          = "rspec-expect_to_make_changes"
+  spec.version       = Rspec::ExpectToMakeChanges::VERSION
   spec.authors       = ["TODO: Write your name"]
   spec.email         = ["tyler@tylerrick.com"]
 
