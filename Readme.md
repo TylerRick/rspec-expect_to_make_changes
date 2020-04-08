@@ -1,4 +1,4 @@
-# RSpec `expect_changes`
+# RSpec expect `before_and_after`
 
 This small library makes it easy to test for a large number of changes, without requiring you to
 deeply nest a bunch of `expect { }` blocks within each other or rewrite them as `change` matchers.
@@ -26,7 +26,7 @@ expectations are related, and how. It can also be hard for the writer of the tes
 if they are relying on things like order and proximity alone to connect related before/after
 expectations.
 
-`expect_changes` gives you a tool to make it explicit and _extremely_ clear that those 2
+`make_changes` gives you a tool to make it explicit and _extremely_ clear that those 2
 expectations are a pair that are very tightly related.
 
 So instead of the above, you can rewrite it as explicit pairs like this:
@@ -82,7 +82,8 @@ But it also has some drawbacks:
    than it needs to be.
 
 RSpec provides compound (`and`/`&`) matchers that let you combine several matchers together and
-treat them as one, so you can actually simplify that to just:
+treat them as one, so you can actually simplify that to just a single event block using just
+built-in RSpec:
 ```ruby
   expect {
     perform_change
@@ -93,13 +94,40 @@ treat them as one, so you can actually simplify that to just:
   )
 ```
 
-Instead of treating this as a sequence of unrelated nested expectations, `expect_changes` treats
+X Instead of treating this as a sequence of unrelated nested expectations, `make_changes` treats
 this as a single action block that has _n_ related expectations describing the state before/after the
 action.
 
-`expect_changes` tames the nesting, flattening it to a single block, and gives you the flexibility
+`make_changes` tames the nesting, flattening it to a single block, and gives you the flexibility
 to either leave your before/after expectations as "regular" `expect`s or use the `change()` matcher
 style of expecting changes.
+
+`change` is often all you need for changes to primitive values. But it isn't always enough for
+doing more complex before/after checks. And it's not always convenient to rewrite existing
+expectations to a different (`change`) syntax.
+
+This flexibility gives you the power and flexibility to lets you express some things that you simply
+couldn't express if you were limited to only the `change` matcher, such as things that you would
+normally use another specialized matcher for, such as expectations on arrays or hashes:
+
+```ruby
+      [
+        ->{ expect_too_close_to_pedestrians(car) },
+        ->{ expect_sufficient_proximity_from_pedestrians(car) },
+      ], [
+        ->{ expect(instance.tags).to match_array [:old_tag] },
+        ->{ expect(instance.tags).to match_array [:new_tag] },
+      ], [
+        ->{
+          expect(team.members).to     include user_1
+          expect(team.members).to_not include user_2
+        },
+        ->{ expect(team.members).to include user_1, user_2 },
+      ]
+```
+
+It can sometimes be more readable or maintainable if you can just use/reuse regular expectations for
+your before/after checks.
 
 
 ## Installation
@@ -107,7 +135,7 @@ style of expecting changes.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'rspec-expect_changes'
+gem 'rspec-make_changes'
 ```
 
 And then execute:
@@ -116,7 +144,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install rspec-expect_changes
+    $ gem install rspec-make_changes
 
 
 ## Development
@@ -127,4 +155,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/TylerRick/rspec-expect_changes.
+Bug reports and pull requests are welcome on GitHub at https://github.com/TylerRick/rspec-make_changes.
