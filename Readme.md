@@ -1,7 +1,8 @@
 # RSpec `expect {…}.to make_changes(…)`
 
-This small library makes it easy to test for a large number of changes, without requiring you to
-deeply nest a bunch of `expect { }` blocks within each other or rewrite them as `change` matchers.
+This small library makes it easy to test that a block makes a number of changes, without requiring
+you to deeply nest a bunch of `expect { }` blocks within each other or rewrite them as `change`
+matchers.
 
 Sure, you could just write add a list of regular RSpec expectations about how the state should be
 _before_ your action, and another list of expectations about how the state should be _after_ your

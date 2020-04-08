@@ -1,5 +1,7 @@
 module Rspec
   module ExpectToMakeChanges
-    VERSION = "0.1.0"
+    def self.version
+      "0.1.0"
+    end
   end
 end
