@@ -127,6 +127,29 @@ normally use another specialized matcher for, such as expectations on arrays or 
   ])
 ```
 
+Although you _can_ define aliases and negated matchers to do things like this:
+
+```ruby
+RSpec::Matchers.alias_matcher          :an_array_including, :include
+RSpec::Matchers.define_negated_matcher :an_array_excluding, :include
+
+      array = ['food', 'water']
+      expect { array << 'spinach' }.to change { array }
+        .from( an_array_excluding('spinach') )
+        .to(   an_array_including('spinach') )
+```
+
+, it may not _always_ be possible, and requires you to define the needed matchers. Whereas
+`make_changes` allows you to simply use the "regular" matchers that you already know and love:
+
+```ruby
+    array = ['food', 'water']
+    expect { array << 'spinach' }.to make_changes([
+      ->{ expect(array).not_to include 'spinach' },
+      ->{ expect(array).to     include 'spinach' },
+    ])
+```
+
 It can sometimes be more readable or maintainable if you can just use/reuse regular expectations for
 your before/after checks.
 
