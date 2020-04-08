@@ -1,7 +1,7 @@
 # RSpec `expect_changes`
 
 This small library makes it easy to test for a large number of changes, without requiring you to
-deeply nest a bunch of `expect { }` blocks within each other.
+deeply nest a bunch of `expect { }` blocks within each other or rewrite them as `change` matchers.
 
 Sure, you could just write add a list of regular RSpec expectations about how the state should be
 _before_ your action, and another list of expectations about how the state should be _after_ your
@@ -29,12 +29,12 @@ expectations.
 `expect_changes` gives you a tool to make it explicit and _extremely_ clear that those 2
 expectations are a pair that are very tightly related.
 
-So instead of the above, you can rerite it as explicit pairs like this:
+So instead of the above, you can rewrite it as explicit pairs like this:
 
 ```ruby
-  expect_changes ->{
+  expect {
     perform_change
-  }, [
+  }.to make_changes([
     ->{ expect(thing.a).to eq 1 },
     ->{ expect(thing.a).to eq 0 },
   ], [
@@ -43,7 +43,7 @@ So instead of the above, you can rerite it as explicit pairs like this:
   ], [
     ->{ expect(thing.c).to eq 9 },
     ->{ expect(thing.c).to eq 9 },
-  ]
+  ])
 ```
 
 or, using `change` matchers, like this:
@@ -81,14 +81,8 @@ But it also has some drawbacks:
 2. You end up with extra nesting, which can make your tests look a bit unwieldy and harder to read
    than it needs to be.
 
-Instead of treating this as a sequence of unrelated nested expectations, `expect_changes` treats
-this as a single action block that has _n_ related expectations describing the state before/after the
-action.
-
-`expect_changes` tames the nesting, flattening it to a single block, and gives you the flexibility
-to either leave your before/after expectations as "regular" `expect`s or use the `change()` matcher
-style of expecting changes.
-
+RSpec provides compound (`and`/`&`) matchers that let you combine several matchers together and
+treat them as one, so you can actually simplify that to just:
 ```ruby
   expect {
     perform_change
@@ -98,6 +92,15 @@ style of expecting changes.
     change { thing.c }.from(3).to(9)
   )
 ```
+
+Instead of treating this as a sequence of unrelated nested expectations, `expect_changes` treats
+this as a single action block that has _n_ related expectations describing the state before/after the
+action.
+
+`expect_changes` tames the nesting, flattening it to a single block, and gives you the flexibility
+to either leave your before/after expectations as "regular" `expect`s or use the `change()` matcher
+style of expecting changes.
+
 
 ## Installation
 
